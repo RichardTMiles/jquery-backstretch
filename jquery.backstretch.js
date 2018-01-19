@@ -61,15 +61,20 @@
         }
       }
 
-      // We need at least one image
-      if (!images || (images && images.length === 0)) {
-        var cssBackgroundImage = $this.css('background-image');
-        if (cssBackgroundImage && cssBackgroundImage !== 'none') {
-          images = [ { url: $this.css('backgroundImage').replace(/url\(|\)|"|'/g,"") } ];
-        } else {
-          $.error('No images were supplied for Backstretch, or element must have a CSS-defined background image.');
-        }
-      }
+       /** If no image is currently given,
+        *  but an image has already been applied using backstretch
+        *  remove the previous backstretch image
+        */
+       if (!images || (images && images.length === 0)) {
+         var cssBackgroundImage = $this.css('background-image');
+         if (cssBackgroundImage && cssBackgroundImage !== 'none') {
+           images = [{url: $this.css('backgroundImage').replace(/url\(|\)|"|'/g, "")}];
+         } else if (obj) {
+           return obj.destroy()
+         } else {
+           $.error('No images were supplied for Backstretch, or element must have a CSS-defined background image.');
+         }
+       }
 
       obj = new Backstretch(this, images, options || {});
       $this.data('backstretch', obj);
